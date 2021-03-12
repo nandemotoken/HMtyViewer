@@ -1,11 +1,12 @@
 let useraddress;
 let complete = 0;
-
+let web3tr;
 
 window.onload = async function() {
     $('#wallet-popup').modal('show');
     ethereum.on('chainChanged', (_chainId) => window.location.reload());
 }
+
 
 async function loadwallet(){
     $('#wallet-popup').modal('hide')
@@ -13,23 +14,33 @@ async function loadwallet(){
     web3mm = await new Web3(web3.currentProvider);
     mmaddress = await web3mm.eth.getAccounts();
     useraddress = mmaddress[0];
-//    window.alert(useraddress);
-//    await checkJPYC();
+    window.alert(useraddress);
     await checkxDai();
-//    await checkPolygon();
-    document.getElementById('message').innerText = "感謝が届いています！";    
 //    if (complete > 0){ window.alert("感謝が届いています！")  }
 }
 
-// async function checkJPYC(){
-//     const JPYCAddress = "0x2370f9d504c7a6e775bf6e14b3f12846b594cd53";
-//     jpyccontract = await new web3mm.eth.Contract(abi, JPYCAddress);
-//     jpycbalance = await jpyccontract.methods.balanceOf(useraddress).call() * 10e-19;
-//     if ( jpycbalance > 0){
-//     document.getElementById('jpycstatus').innerText = Math.ceil(jpycbalance);
-//         complete++;
-//         }
-// }
+async function loadTorus(){
+
+$('#wallet-popup').modal('hide')
+    
+const torus = new Torus({
+  buttonPosition: "top-right" // default: bottom-left
+});
+await torus.init({
+  buildEnv: "production", // default: production
+  enableLogging: true, // default: false
+  network: {
+    host: "mainnet", // default: mainnet
+  },
+  showTorusButton: true // default: true
+});
+await torus.login(); // await torus.ethereum.enable()
+web3tr = await new Web3(torus.provider);
+torusdata = await await web3tr.eth.getAccounts();
+useraddress = torusdata[0];
+window.alert(useraddress);
+await checkxDai();
+}
 
 
 async function checkxDai(){
@@ -40,16 +51,7 @@ async function checkxDai(){
     if ( xdaibalance > 0){
     document.getElementById('xdaistatus').innerText = Math.ceil(xdaibalance);
         complete++;
+        document.getElementById('message').innerText = "感謝が届いています！";    
     }
 }
 
-// async function checkPolygon(){
-//     const polygonAddress = "0x6AE7Dfc73E0dDE2aa99ac063DcF7e8A63265108c";
-//     const web3polygon = new Web3(new Web3.providers.HttpProvider("https://rpc-mainnet.maticvigil.com/"));
-//     polygoncontract = await new web3polygon.eth.Contract(abi, polygonAddress);
-//     polygonbalance = await polygoncontract.methods.balanceOf(useraddress).call() * 10e-19;    
-//     if ( polygonbalance > 0){
-//     document.getElementById('polygonstatus').innerText = Math.ceil(polygonbalance);
-//         complete++;
-//     }
-// }
